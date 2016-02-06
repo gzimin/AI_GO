@@ -25,6 +25,10 @@ public:
     ~Desk()
     {
         cout << "Memory has been cleaned" << endl;
+        for(int i = 0; i < m; i++)
+        {
+            delete desk[i];
+        }
         delete []desk;
     }
 
