@@ -1,14 +1,18 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <fstream>
 #include <string>
 #include <iostream>
+
 using namespace std;
+
+
 class Desk
 {
 private:
-    int n, m, turn;
+    int n;
+    int m;
+    int turn;
     int **desk;
+
 public:
     Desk(int n, int m, int turn, int **desk)
     {
@@ -17,6 +21,12 @@ public:
         this->turn = turn;
         this->desk = desk;
     }
+
+    ~Desk()
+    {
+        cout << "Memory has been cleaned" << endl;
+    }
+
     void show()
     {
         cout << n << " " << m << " " << turn << endl;
@@ -32,6 +42,8 @@ public:
 
 
 };
+
+
 int set(char* temp, int i)
 {
     switch(temp[i])
@@ -46,6 +58,8 @@ int set(char* temp, int i)
         cout << "Error deck input" << endl;
     }
 }
+
+
 Desk* info(string way2file)
 {
     ifstream in(way2file.c_str());
@@ -62,22 +76,17 @@ Desk* info(string way2file)
         {
             desk[i] = new int[n];
         }
-        char temp[n * m];
+        char temp_char[n * m];
         if(in)
         {
-            for(int i = 0; i < n * m; i++)
-            {
-                in >> temp[i];
-            }
-        }
         int tmp = 0;
-
-        for(int i = 0; i < n; i++)
-        {
-            for(int j = 0; j < m; j++)
+            for(int i = 0; i < n; i++)
             {
-                desk[i][j] = set(temp, tmp);
-                tmp++;
+                for(int j = 0; j < m; j++)
+                {
+                    in >> temp_char[tmp];
+                    desk[i][j] = set(temp_char, tmp++);
+                }
             }
         }
         in.close();
@@ -86,9 +95,11 @@ Desk* info(string way2file)
     }
 }
 
+
 int main()
 {
     Desk *testdeck;
     testdeck = info("inp.txt");
     testdeck->show();
+    delete testdeck;
 }
