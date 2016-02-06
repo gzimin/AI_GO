@@ -25,6 +25,7 @@ public:
     ~Desk()
     {
         cout << "Memory has been cleaned" << endl;
+        delete []desk;
     }
 
     void show()
@@ -77,13 +78,13 @@ Desk* info(string way2file)
             desk[i] = new int[n];
         }
 
-        char temp_char;
         if(in)
         {
             for(int i = 0; i < n; i++)
             {
                 for(int j = 0; j < m; j++)
                 {
+                    char temp_char;
                     in >> temp_char;
                     desk[i][j] = set(temp_char);
                 }
