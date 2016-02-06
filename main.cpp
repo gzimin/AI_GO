@@ -44,9 +44,9 @@ public:
 };
 
 
-int set(char* temp, int i)
+int set(char temp)
 {
-    switch(temp[i])
+    switch(temp)
     {
     case '1':
         return 1;
@@ -76,19 +76,20 @@ Desk* info(string way2file)
         {
             desk[i] = new int[n];
         }
-        char temp_char[n * m];
+
+        char temp_char;
         if(in)
         {
-        int tmp = 0;
             for(int i = 0; i < n; i++)
             {
                 for(int j = 0; j < m; j++)
                 {
-                    in >> temp_char[tmp];
-                    desk[i][j] = set(temp_char, tmp++);
+                    in >> temp_char;
+                    desk[i][j] = set(temp_char);
                 }
             }
         }
+
         in.close();
         Desk *startdesk = new Desk(n, m, move, desk);
         return startdesk;
