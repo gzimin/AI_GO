@@ -2,6 +2,7 @@
 #include <fstream>
 #include "input.h"
 
+
 Desk::Desk(int n, int m, int turn, int **desk)
 {
     this->n = n;
@@ -9,6 +10,7 @@ Desk::Desk(int n, int m, int turn, int **desk)
     this->turn = turn;
     this->desk = desk;
 }
+
 
 void Desk::show()
 {
@@ -23,6 +25,7 @@ void Desk::show()
     }
 }
 
+
 Desk::~Desk()
 {
     cout << "Memory has been cleaned" << endl;
@@ -32,6 +35,8 @@ Desk::~Desk()
     }
     delete []desk;
 }
+
+
 int set(char temp)
 {
     switch(temp)
@@ -46,6 +51,8 @@ int set(char temp)
         cout << "Error deck input" << endl;
     }
 }
+
+
 Desk* info(string way2file)
 {
     ifstream in(way2file.c_str());
