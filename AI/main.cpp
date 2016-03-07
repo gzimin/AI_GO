@@ -15,6 +15,92 @@ move aibot(int **desk, int n) // n -размерность доски
     moveret.x = 1;
     moveret.y = 1;
     // Задача 49-кю
+        if(desk[0][0] == 1) // левый верхний камень
+        {
+            if(desk[0][1] != 1 && desk[1][0] != 1)
+            {
+                if(desk[0][1] == 0 && desk[1][0] == 2)
+                {
+                    moveret.x = 1;
+                    moveret.y = 0;
+                    return
+                            moveret;
+                }
+                else if(desk[0][1] == 2 && desk[1][0] == 0)
+                {
+                    moveret.x = 0;
+                    moveret.y = 1;
+                    return
+                            moveret;
+                }
+
+            }
+        }
+        if(desk[n - 1][0] == 1) // левый нижний камень
+        {
+            if(desk[n- 1][1] != 1 && desk[n - 2][0] != 1)
+            {
+                if(desk[n - 1][1] == 0 && desk[n - 2][0] == 2)
+                {
+                    moveret.x = n - 1;
+                    moveret.y = 1;
+                    return
+                            moveret;
+                }
+                else if(desk[n - 1][1] == 2 && desk[n - 2][0] == 0)
+                {
+                    moveret.x = 0;
+                    moveret.y = n - 2;
+                    return
+                            moveret;
+                }
+
+            }
+        }
+        if(desk[0][n - 1] == 1) // правый верхний камень
+        {
+            if(desk[1][n- 1] != 1 && desk[0][n - 2] != 1)
+            {
+                if(desk[1][n - 1] == 0 && desk[0][n - 2] == 2)
+                {
+                    moveret.x = n - 1;
+                    moveret.y = 1;
+                    return
+                            moveret;
+                }
+                else if(desk[1][n - 1] == 2 && desk[0][n - 2] == 0)
+                {
+                    moveret.x = 0;
+                    moveret.y = n - 2;
+                    return
+                            moveret;
+                }
+
+            }
+        }
+
+        if(desk[n - 1][n - 1] == 1) // правый нижний камень
+        {
+
+            if(desk[n - 2][n- 1] != 1 && desk[n - 1][n - 2] != 1)
+            {
+                if(desk[n - 2][n - 1] == 0 && desk[n - 1][n - 2] == 2)
+                {
+                    moveret.x = n - 2;
+                    moveret.y = n - 1;
+                    return
+                            moveret;
+                }
+                else if(desk[1][n - 1] == 2 && desk[0][n - 2] == 0)
+                {
+                    moveret.x = n - 1;
+                    moveret.y = n - 2;
+                    return
+                            moveret;
+                }
+
+            }
+        }
     for(int i = 1; i < n; i++) // 1-ый цикл( верхняя стенка)
     {
         if(desk[0][i] == 1)
@@ -318,7 +404,11 @@ move aibot(int **desk, int n) // n -размерность доски
         }
 
     }
+
+
+
 }
+
 
 int main()
 {
