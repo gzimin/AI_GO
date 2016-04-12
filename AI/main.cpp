@@ -56,7 +56,7 @@ void group_search(int **desk, int n, int stone)
     while(true)
     {
         int whilestop = 0;
-        startpoint = points.Peek(1);
+        startpoint = points.Peek(points.getTop());
         cout << startpoint.x << " " << startpoint.y << endl;
         if(points.getTop() != 0)
             points.pop(); //извлекаем из стека
