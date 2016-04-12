@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <stack.h>
+#include <stack>
 
 using namespace std;
 
@@ -28,7 +28,7 @@ void group_search(int **desk, int n, int stone)
     move temppoint;
     temppoint.x = 0;
     temppoint.y = 0;
-    Stack<move> points(n);
+    std::stack<move> points;
     int mat[20][20];
     for(int i = 0; i < n; i++)
     {
@@ -56,10 +56,11 @@ void group_search(int **desk, int n, int stone)
     while(true)
     {
         int whilestop = 0;
-        startpoint = points.Peek(points.getTop());
-        cout << startpoint.x << " " << startpoint.y << endl;
-        if(points.getTop() != 0)
+        if(points.empty() == false)
+        {
+        startpoint = points.top();
             points.pop(); //извлекаем из стека
+        }
         else
             break;
         if( startpoint.y + 1 < n && desk[startpoint.x][startpoint.y + 1] == stone )
@@ -88,7 +89,7 @@ void group_search(int **desk, int n, int stone)
             }
 
         }
-        if( startpoint.x - 1 > 0 && desk[startpoint.x - 1][startpoint.y] == stone)
+        if( startpoint.x - 1 >= 0 && desk[startpoint.x - 1][startpoint.y] == stone)
         {
             whilestop++;
             if(mat[startpoint.x - 1][startpoint.y] != 1)
@@ -100,7 +101,7 @@ void group_search(int **desk, int n, int stone)
             }
 
         }
-        if(startpoint.y - 1 > 0 && desk[startpoint.x][startpoint.y - 1] == stone)
+        if(startpoint.y - 1 >= 0 && desk[startpoint.x][startpoint.y - 1] == stone)
         {
             whilestop++;
             if(mat[startpoint.x][startpoint.y - 1] != 1)
