@@ -1,15 +1,127 @@
 #include <iostream>
+#include <vector>
+#include <stack.h>
 
 using namespace std;
-
 
 struct move
 {
     int x,y;
 };
+struct neardots
+{
+  int x;
+  int y;
+  int stone;
+};
 
 
+
+void group_search(int **desk, int n, int stone)
+{
+    vector<move> stone_group;
+    stone_group.reserve(n);
+    int top = 0;
+    move startpoint;
+    startpoint.x = 0;
+    startpoint.y = 0;
+    move temppoint;
+    temppoint.x = 0;
+    temppoint.y = 0;
+    Stack<move> points(n);
+    int mat[20][20];
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            mat[i][j] = 0;
+        }
+    }
+    for(int i = 0; i < n; i++) // цикл для нахождения первого камня группы
+   {
+        for(int j = 0; j < n; j++)
+        {
+            if(desk[i][j] == stone)
+            {
+                startpoint.x = i;
+                startpoint.y = j;
+                points.push(startpoint);
+              stone_group.push_back(startpoint);
+                mat[i][j] = 1;
+                goto groupsearch;
+            }
+        }
+    }
+    groupsearch:
+    while(true)
+    {
+        int whilestop = 0;
+        startpoint = points.Peek(1);
+        cout << startpoint.x << " " << startpoint.y << endl;
+        if(points.getTop() != 0)
+            points.pop(); //извлекаем из стека
+        else
+            break;
+        if( startpoint.y + 1 < n && desk[startpoint.x][startpoint.y + 1] == stone )
+        {
+            whilestop++;
+            if(mat[startpoint.x][startpoint.y + 1] != 1)
+            {
+                mat[startpoint.x][startpoint.y + 1] = 1;
+                temppoint = startpoint;
+                temppoint.y++;
+                points.push(temppoint);
+               stone_group.push_back(temppoint);
+            }
+
+        }
+        if(startpoint.x + 1 < n && desk[startpoint.x + 1][startpoint.y] == stone)
+        {
+            whilestop++;
+            if(mat[startpoint.x + 1][startpoint.y] != 1)
+            {
+                mat[startpoint.x + 1][startpoint.y] = 1;
+                temppoint = startpoint;
+                temppoint.x++;
+                points.push(temppoint);
+               stone_group.push_back(temppoint);
+            }
+
+        }
+        if( startpoint.x - 1 > 0 && desk[startpoint.x - 1][startpoint.y] == stone)
+        {
+            whilestop++;
+            if(mat[startpoint.x - 1][startpoint.y] != 1)
+            {
+                mat[startpoint.x - 1][startpoint.y] = 1;
+                temppoint.x--;
+                points.push(temppoint);
+               stone_group.push_back(temppoint);
+            }
+
+        }
+        if(startpoint.y - 1 > 0 && desk[startpoint.x][startpoint.y - 1] == stone)
+        {
+            whilestop++;
+            if(mat[startpoint.x][startpoint.y - 1] != 1)
+            {
+                mat[startpoint.x][startpoint.y - 1] = 1;
+                temppoint.y--;
+                points.push(temppoint);
+               stone_group.push_back(temppoint);
+            }
+
+        }
+        if(whilestop == 0)
+            break;
+    }
+    int vsize = stone_group.size();
+    cout << vsize << endl;
+
+
+}
 move aibot(int **desk, int n) // n -размерность доски
+
 {
     move moveret;
     moveret.x = 1;
@@ -426,9 +538,7 @@ int main()
             cin >> desk[i][j];
         }
     }
+    group_search(desk, n, 1);
 
-    move turn = aibot(desk, n);
-    cout << turn.x << " " << turn.y << endl;
-    return 0;
 }
 
