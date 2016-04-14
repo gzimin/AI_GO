@@ -17,7 +17,7 @@ struct neardots
 
 
 
-void group_search(int **desk, int n, int stone)
+vector<move> group_search(int **desk, int n, int stone)
 {
     vector<move> stone_group;
     stone_group.reserve(n);
@@ -116,8 +116,7 @@ void group_search(int **desk, int n, int stone)
         if(whilestop == 0)
             break;
     }
-    int vsize = stone_group.size();
-    cout << vsize << endl;
+    return stone_group;
 
 
 }
@@ -539,7 +538,8 @@ int main()
             cin >> desk[i][j];
         }
     }
-    group_search(desk, n, 1);
+    vector<move> group = group_search(desk, n, 1);
+
 
 }
 
