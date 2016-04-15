@@ -17,11 +17,10 @@ struct neardots
 
 
 
-vector<move> group_search(int **desk, int n, int stone)
+vector<move> group_search(int **desk, int n, int stone, int **allgroups, int group_number)
 {
     vector<move> stone_group;
     stone_group.reserve(n);
-    int top = 0;
     move startpoint;
     startpoint.x = 0;
     startpoint.y = 0;
@@ -29,25 +28,17 @@ vector<move> group_search(int **desk, int n, int stone)
     temppoint.x = 0;
     temppoint.y = 0;
     std::stack<move> points;
-    int mat[20][20];
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < n; j++)
-        {
-            mat[i][j] = 0;
-        }
-    }
     for(int i = 0; i < n; i++) // цикл для нахождения первого камня группы
    {
         for(int j = 0; j < n; j++)
         {
-            if(desk[i][j] == stone)
+            if(desk[i][j] == stone && allgroups[i][j] == 0)
             {
                 startpoint.x = i;
                 startpoint.y = j;
                 points.push(startpoint);
               stone_group.push_back(startpoint);
-                mat[i][j] = 1;
+                allgroups[i][j] = group_number;
                 goto groupsearch;
             }
         }
@@ -66,9 +57,9 @@ vector<move> group_search(int **desk, int n, int stone)
         if( startpoint.y + 1 < n && desk[startpoint.x][startpoint.y + 1] == stone )
         {
             whilestop++;
-            if(mat[startpoint.x][startpoint.y + 1] != 1)
+            if(allgroups[startpoint.x][startpoint.y + 1] == 0)
             {
-                mat[startpoint.x][startpoint.y + 1] = 1;
+                allgroups[startpoint.x][startpoint.y + 1] = group_number;
                 temppoint = startpoint;
                 temppoint.y++;
                 points.push(temppoint);
@@ -79,9 +70,9 @@ vector<move> group_search(int **desk, int n, int stone)
         if(startpoint.x + 1 < n && desk[startpoint.x + 1][startpoint.y] == stone)
         {
             whilestop++;
-            if(mat[startpoint.x + 1][startpoint.y] != 1)
+            if(allgroups[startpoint.x + 1][startpoint.y] == 0)
             {
-                mat[startpoint.x + 1][startpoint.y] = 1;
+                allgroups[startpoint.x + 1][startpoint.y] = group_number;
                 temppoint = startpoint;
                 temppoint.x++;
                 points.push(temppoint);
@@ -92,9 +83,9 @@ vector<move> group_search(int **desk, int n, int stone)
         if( startpoint.x - 1 >= 0 && desk[startpoint.x - 1][startpoint.y] == stone)
         {
             whilestop++;
-            if(mat[startpoint.x - 1][startpoint.y] != 1)
+            if(allgroups[startpoint.x - 1][startpoint.y] == 0)
             {
-                mat[startpoint.x - 1][startpoint.y] = 1;
+                allgroups[startpoint.x - 1][startpoint.y] = group_number;
                 temppoint.x--;
                 points.push(temppoint);
                stone_group.push_back(temppoint);
@@ -104,9 +95,9 @@ vector<move> group_search(int **desk, int n, int stone)
         if(startpoint.y - 1 >= 0 && desk[startpoint.x][startpoint.y - 1] == stone)
         {
             whilestop++;
-            if(mat[startpoint.x][startpoint.y - 1] != 1)
+            if(allgroups[startpoint.x][startpoint.y - 1] == 0)
             {
-                mat[startpoint.x][startpoint.y - 1] = 1;
+                allgroups[startpoint.x][startpoint.y - 1] = group_number;
                 temppoint.y--;
                 points.push(temppoint);
                stone_group.push_back(temppoint);
@@ -538,8 +529,37 @@ int main()
             cin >> desk[i][j];
         }
     }
-    vector<move> group = group_search(desk, n, 1);
+    int **mat = new int*[n];
+    for(int i = 0; i < n; i++)
+    {
+        mat[i] = new int[n];
+    }
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            mat[i][j] = 0;
+        }
+    }
+    vector<move> group;
+    int groupnum = 1;
+    while(true)
+    {
 
+        group = group_search(desk, n, 1, mat, groupnum);
+
+        if(groupnum != n / 2)
+            groupnum++;
+        else
+            break;
+    }
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            cout << mat[i][j] << " ";
+        }
+        cout << endl;
+    }
 
 }
-
