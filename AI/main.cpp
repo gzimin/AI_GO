@@ -10,14 +10,13 @@ struct move
 };
 struct neardots
 {
-  int x;
-  int y;
-  int stone;
+    int x;
+    int y;
+    int stone;
 };
 
 
-
-vector<move> group_search(int **desk, int n, int stone, int **allgroups, int group_number)
+vector<move> group_search(int **desk, int n, int **allgroups)
 {
     vector<move> stone_group;
     stone_group.reserve(n);
@@ -27,89 +26,115 @@ vector<move> group_search(int **desk, int n, int stone, int **allgroups, int gro
     move temppoint;
     temppoint.x = 0;
     temppoint.y = 0;
+    int stonecolor = 0;
     std::stack<move> points;
-    for(int i = 0; i < n; i++) // цикл для нахождения первого камня группы
-   {
-        for(int j = 0; j < n; j++)
-        {
-            if(desk[i][j] == stone && allgroups[i][j] == 0)
-            {
-                startpoint.x = i;
-                startpoint.y = j;
-                points.push(startpoint);
-              stone_group.push_back(startpoint);
-                allgroups[i][j] = group_number;
-                goto groupsearch;
-            }
-        }
-    }
-    groupsearch:
+    int group_number = 0;
+
     while(true)
     {
-        int whilestop = 0;
-        if(points.empty() == false)
+        for(int i = 0; i < n; i++) // цикл для нахождения первого камня группы
         {
-        startpoint = points.top();
-            points.pop(); //извлекаем из стека
-        }
-        else
-            break;
-        if( startpoint.y + 1 < n && desk[startpoint.x][startpoint.y + 1] == stone )
-        {
-            whilestop++;
-            if(allgroups[startpoint.x][startpoint.y + 1] == 0)
+            for(int j = 0; j < n; j++)
             {
-                allgroups[startpoint.x][startpoint.y + 1] = group_number;
-                temppoint = startpoint;
-                temppoint.y++;
-                points.push(temppoint);
-               stone_group.push_back(temppoint);
-            }
 
+                if(desk[i][j] != 0  && allgroups[i][j] == 0)
+                {
+                    if(desk[i][j] == 1)
+                    {
+                        stonecolor = 1;
+                        if(group_number % 2 == 0)
+                            group_number++;
+                        else
+                            group_number+=2;
+                    }
+                    if(desk[i][j] == 2)
+                    {
+                        stonecolor = 2;
+                        if(group_number % 2 == 1)
+                            group_number++;
+                        else
+                            group_number+=2;
+                    }
+
+                    startpoint.x = i;
+                    startpoint.y = j;
+                    points.push(startpoint);
+                    stone_group.push_back(startpoint);
+                    allgroups[i][j] = group_number;
+                    goto groupsearch;
+                }
+                if(i == (n - 1) && j == (n - 1))
+                {
+                    return stone_group;
+                }
+            }
         }
-        if(startpoint.x + 1 < n && desk[startpoint.x + 1][startpoint.y] == stone)
+groupsearch:
+        while(true)
         {
-            whilestop++;
-            if(allgroups[startpoint.x + 1][startpoint.y] == 0)
+            int whilestop = 0;
+            if(points.empty() == false)
             {
-                allgroups[startpoint.x + 1][startpoint.y] = group_number;
-                temppoint = startpoint;
-                temppoint.x++;
-                points.push(temppoint);
-               stone_group.push_back(temppoint);
+                startpoint = points.top();
+                points.pop(); //извлекаем из стека
             }
-
-        }
-        if( startpoint.x - 1 >= 0 && desk[startpoint.x - 1][startpoint.y] == stone)
-        {
-            whilestop++;
-            if(allgroups[startpoint.x - 1][startpoint.y] == 0)
+            else
+                break;
+            if( startpoint.y + 1 < n && desk[startpoint.x][startpoint.y + 1] == stonecolor )
             {
-                allgroups[startpoint.x - 1][startpoint.y] = group_number;
-                temppoint.x--;
-                points.push(temppoint);
-               stone_group.push_back(temppoint);
-            }
+                whilestop++;
+                if(allgroups[startpoint.x][startpoint.y + 1] == 0)
+                {
+                    allgroups[startpoint.x][startpoint.y + 1] = group_number;
+                    temppoint = startpoint;
+                    temppoint.y++;
+                    points.push(temppoint);
+                    stone_group.push_back(temppoint);
+                }
 
-        }
-        if(startpoint.y - 1 >= 0 && desk[startpoint.x][startpoint.y - 1] == stone)
-        {
-            whilestop++;
-            if(allgroups[startpoint.x][startpoint.y - 1] == 0)
+            }
+            if(startpoint.x + 1 < n && desk[startpoint.x + 1][startpoint.y] == stonecolor)
             {
-                allgroups[startpoint.x][startpoint.y - 1] = group_number;
-                temppoint.y--;
-                points.push(temppoint);
-               stone_group.push_back(temppoint);
-            }
+                whilestop++;
+                if(allgroups[startpoint.x + 1][startpoint.y] == 0)
+                {
+                    allgroups[startpoint.x + 1][startpoint.y] = group_number;
+                    temppoint = startpoint;
+                    temppoint.x++;
+                    points.push(temppoint);
+                    stone_group.push_back(temppoint);
+                }
 
+            }
+            if( startpoint.x - 1 >= 0 && desk[startpoint.x - 1][startpoint.y] == stonecolor)
+            {
+                whilestop++;
+                if(allgroups[startpoint.x - 1][startpoint.y] == 0)
+                {
+                    allgroups[startpoint.x - 1][startpoint.y] = group_number;
+                    temppoint.x--;
+                    points.push(temppoint);
+                    stone_group.push_back(temppoint);
+                }
+
+            }
+            if(startpoint.y - 1 >= 0 && desk[startpoint.x][startpoint.y - 1] == stonecolor)
+            {
+                whilestop++;
+                if(allgroups[startpoint.x][startpoint.y - 1] == 0)
+                {
+                    allgroups[startpoint.x][startpoint.y - 1] = group_number;
+                    temppoint.y--;
+                    points.push(temppoint);
+                    stone_group.push_back(temppoint);
+                }
+
+            }
+            if(whilestop == 0)
+                break;
         }
-        if(whilestop == 0)
-            break;
     }
     return stone_group;
-
-
 }
 int main()
 {
@@ -140,17 +165,7 @@ int main()
         }
     }
     vector<move> group;
-    int groupnum = 1;
-    while(true)
-    {
-
-        group = group_search(desk, n, 1, mat, groupnum);
-
-        if(groupnum < n * n / 2 + 1)
-            groupnum++;
-        else
-            break;
-    }
+    group = group_search(desk, n, mat);
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
@@ -159,5 +174,6 @@ int main()
         }
         cout << endl;
     }
+
 
 }
