@@ -47,7 +47,7 @@ int free_ways(int group_number, int **allgroups, int n)
     }
     return freeways;
 }
-void group_search_2(stack<move> &points, int **allgroups, move &startpoint,
+void search_one_group(stack<move> &points, int **allgroups, move &startpoint,
                    move &temppoint, int &stonecolor, int &group_number, int &n, int **desk)
 {
         while(points.empty() == false)
@@ -99,7 +99,7 @@ void group_search_2(stack<move> &points, int **allgroups, move &startpoint,
         }
 }
 
-void group_search(int **desk, int n, int **allgroups)
+void groups_search(int **desk, int n, int **allgroups)
 {
     move startpoint;
     startpoint.x = 0;
@@ -110,13 +110,13 @@ void group_search(int **desk, int n, int **allgroups)
     int stonecolor = 0;
     std::stack<move> points;
     int group_number = 0;
-    while(group_number <= n * n)
+    int whilestop = 0;
+    while(whilestop < n * n)
     {
         for(int i = 0; i < n; i++) // цикл для нахождения первого камня группы
         {
             for(int j = 0; j < n; j++)
             {
-
                 if(desk[i][j] != 0  && allgroups[i][j] == 0)
                 {
                     if(desk[i][j] == 1)
@@ -125,7 +125,7 @@ void group_search(int **desk, int n, int **allgroups)
                         if(group_number % 2 == 0)
                             group_number++;
                         else
-                            group_number+=2;
+                            group_number+= 2;
                     }
                     if(desk[i][j] == 2)
                     {
@@ -133,19 +133,18 @@ void group_search(int **desk, int n, int **allgroups)
                         if(group_number % 2 == 1)
                             group_number++;
                         else
-                            group_number+=2;
+                            group_number+= 2;
                     }
-
                     startpoint.x = i;
                     startpoint.y = j;
                     points.push(startpoint);
                     allgroups[i][j] = group_number;
-                    group_search_2(points, allgroups, startpoint, temppoint, stonecolor, group_number, n, desk);
+                    search_one_group(points, allgroups, startpoint, temppoint,
+                                     stonecolor, group_number, n, desk);
                 }
-                if(i == n - 1 && j == n - 1)
-                    return;
             }
         }
+        whilestop++;
     }
 }
 
@@ -187,7 +186,7 @@ int main()
         for(int j = 0; j < n; j++)
             viewed[i][j] = false;
     }
-    group_search(desk, n, mat);
+    groups_search(desk, n, mat);
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
