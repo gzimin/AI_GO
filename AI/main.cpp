@@ -110,9 +110,6 @@ void groups_search(int **desk, int n, int **allgroups)
     int stonecolor = 0;
     std::stack<move> points;
     int group_number = 0;
-    int whilestop = 0;
-    while(whilestop < n * n)
-    {
         for(int i = 0; i < n; i++) // цикл для нахождения первого камня группы
         {
             for(int j = 0; j < n; j++)
@@ -144,8 +141,6 @@ void groups_search(int **desk, int n, int **allgroups)
                 }
             }
         }
-        whilestop++;
-    }
 }
 
 int main()
