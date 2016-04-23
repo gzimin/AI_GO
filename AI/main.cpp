@@ -48,55 +48,55 @@ int free_ways(int group_number, int **allgroups, int n)
     return freeways;
 }
 void search_one_group(stack<move> &points, int **allgroups, move &startpoint,
-                   move &temppoint, int &stonecolor, int &group_number, int &n, int **desk)
+                      move &temppoint, int &stonecolor, int &group_number, int &n, int **desk)
 {
-        while(points.empty() == false)
+    while(points.empty() == false)
+    {
+        startpoint = points.top();
+        points.pop(); //извлекаем из стека
+        if( startpoint.y + 1 < n && desk[startpoint.x][startpoint.y + 1] == stonecolor )
         {
-                startpoint = points.top();
-                points.pop(); //извлекаем из стека
-            if( startpoint.y + 1 < n && desk[startpoint.x][startpoint.y + 1] == stonecolor )
+            if(allgroups[startpoint.x][startpoint.y + 1] == 0)
             {
-                if(allgroups[startpoint.x][startpoint.y + 1] == 0)
-                {
-                    allgroups[startpoint.x][startpoint.y + 1] = group_number;
-                    temppoint = startpoint;
-                    temppoint.y++;
-                    points.push(temppoint);
-                }
-
+                allgroups[startpoint.x][startpoint.y + 1] = group_number;
+                temppoint = startpoint;
+                temppoint.y++;
+                points.push(temppoint);
             }
-            if(startpoint.x + 1 < n && desk[startpoint.x + 1][startpoint.y] == stonecolor)
-            {
-                if(allgroups[startpoint.x + 1][startpoint.y] == 0)
-                {
-                    allgroups[startpoint.x + 1][startpoint.y] = group_number;
-                    temppoint = startpoint;
-                    temppoint.x++;
-                    points.push(temppoint);
-                }
 
-            }
-            if( startpoint.x - 1 >= 0 && desk[startpoint.x - 1][startpoint.y] == stonecolor)
-            {
-                if(allgroups[startpoint.x - 1][startpoint.y] == 0)
-                {
-                    allgroups[startpoint.x - 1][startpoint.y] = group_number;
-                    temppoint.x--;
-                    points.push(temppoint);
-                }
-
-            }
-            if(startpoint.y - 1 >= 0 && desk[startpoint.x][startpoint.y - 1] == stonecolor)
-            {
-                if(allgroups[startpoint.x][startpoint.y - 1] == 0)
-                {
-                    allgroups[startpoint.x][startpoint.y - 1] = group_number;
-                    temppoint.y--;
-                    points.push(temppoint);
-                }
-
-            }
         }
+        if(startpoint.x + 1 < n && desk[startpoint.x + 1][startpoint.y] == stonecolor)
+        {
+            if(allgroups[startpoint.x + 1][startpoint.y] == 0)
+            {
+                allgroups[startpoint.x + 1][startpoint.y] = group_number;
+                temppoint = startpoint;
+                temppoint.x++;
+                points.push(temppoint);
+            }
+
+        }
+        if( startpoint.x - 1 >= 0 && desk[startpoint.x - 1][startpoint.y] == stonecolor)
+        {
+            if(allgroups[startpoint.x - 1][startpoint.y] == 0)
+            {
+                allgroups[startpoint.x - 1][startpoint.y] = group_number;
+                temppoint.x--;
+                points.push(temppoint);
+            }
+
+        }
+        if(startpoint.y - 1 >= 0 && desk[startpoint.x][startpoint.y - 1] == stonecolor)
+        {
+            if(allgroups[startpoint.x][startpoint.y - 1] == 0)
+            {
+                allgroups[startpoint.x][startpoint.y - 1] = group_number;
+                temppoint.y--;
+                points.push(temppoint);
+            }
+
+        }
+    }
 }
 
 void groups_search(int **desk, int n, int **allgroups)
@@ -110,37 +110,37 @@ void groups_search(int **desk, int n, int **allgroups)
     int stonecolor = 0;
     std::stack<move> points;
     int group_number = 0;
-        for(int i = 0; i < n; i++) // цикл для нахождения первого камня группы
+    for(int i = 0; i < n; i++) // цикл для нахождения первого камня группы
+    {
+        for(int j = 0; j < n; j++)
         {
-            for(int j = 0; j < n; j++)
+            if(desk[i][j] != 0  && allgroups[i][j] == 0)
             {
-                if(desk[i][j] != 0  && allgroups[i][j] == 0)
+                if(desk[i][j] == 1)
                 {
-                    if(desk[i][j] == 1)
-                    {
-                        stonecolor = 1;
-                        if(group_number % 2 == 0)
-                            group_number++;
-                        else
-                            group_number+= 2;
-                    }
-                    if(desk[i][j] == 2)
-                    {
-                        stonecolor = 2;
-                        if(group_number % 2 == 1)
-                            group_number++;
-                        else
-                            group_number+= 2;
-                    }
-                    startpoint.x = i;
-                    startpoint.y = j;
-                    points.push(startpoint);
-                    allgroups[i][j] = group_number;
-                    search_one_group(points, allgroups, startpoint, temppoint,
-                                     stonecolor, group_number, n, desk);
+                    stonecolor = 1;
+                    if(group_number % 2 == 0)
+                        group_number++;
+                    else
+                        group_number+= 2;
                 }
+                if(desk[i][j] == 2)
+                {
+                    stonecolor = 2;
+                    if(group_number % 2 == 1)
+                        group_number++;
+                    else
+                        group_number+= 2;
+                }
+                startpoint.x = i;
+                startpoint.y = j;
+                points.push(startpoint);
+                allgroups[i][j] = group_number;
+                search_one_group(points, allgroups, startpoint, temppoint,
+                                 stonecolor, group_number, n, desk);
             }
         }
+    }
 }
 
 int main()
