@@ -8,45 +8,201 @@ struct move
 {
     int x,y;
 };
-struct neardots
+bool **free_ways_desk(int group_number, int **groups, int n)
 {
-    int x;
-    int y;
-    int stone;
-};
-
-
-
-int free_ways(int group_number, int **allgroups, int n)
-{
-    int freeways = 0;
+    bool **tempdesk = new bool*[n];
+    for(int i = 0; i < n; i++)
+    {
+        tempdesk[i] = new bool[n];
+    }
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
         {
-            if(allgroups[i][j] == group_number)
+            tempdesk[i][j] = false;
+        }
+    }
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(groups[i][j] == group_number)
             {
-                if(i + 1 < n && allgroups[i + 1][j] == 0)
+                if(i - 1 >= 0 && groups[i - 1][j] == 0)
                 {
-                    freeways++;
+                    tempdesk[i - 1][j] = true;
                 }
-                if(i - 1 > 0 && allgroups[i - 1][j] == 0)
+                if(j - 1 >= 0 && groups[i][j - 1] == 0)
                 {
-                    freeways++;
+                    tempdesk[i][j - 1] = true;
                 }
-                if( j + 1 < n &&allgroups[i][j + 1] == 0)
+                if( i + 1 < n && groups[i + 1][j] == 0)
                 {
-                    freeways++;
+                    tempdesk[i + 1][j] = true;
                 }
-                if( j - 1 > 0 && allgroups[i][j - 1] == 0)
+                if( j + 1 < n && groups[i][j + 1] == 0)
                 {
-                    freeways++;
+                    tempdesk[i][j + 1] = true;
                 }
             }
         }
     }
-    return freeways;
+    return
+            tempdesk;
 }
+
+int free_ways_count(int **groups, int group_number, int n)
+{
+    int ret = 0;
+    bool **tempdesk = new bool*[n];
+    for(int i = 0; i < n; i++)
+    {
+        tempdesk[i] = new bool[n];
+    }
+    tempdesk = free_ways_desk(group_number, groups, n);
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(tempdesk[i][j] == true)
+                ret++;
+        }
+    }
+    return
+            ret;
+}
+
+move increase_group_power(int **groups, int group_number, int n)
+{
+
+    move moveret;
+    moveret.x = 0;
+    moveret.y = 0;
+    int tempways = 0;
+    bool **tempdesk = new bool*[n];
+    for(int i = 0; i < n; i++)
+    {
+        tempdesk[i] = new bool[n];
+    }
+    tempdesk = free_ways_desk(group_number, groups, n);
+
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(groups[i][j] == group_number)
+            {
+                if(i - 1 >= 0 && groups[i - 1][j] == 0)
+                {
+                    if(tempdesk[i - 1][j] != true)
+                    {
+                        if(tempdesk[i - 2][j] != true)
+                        {
+                            tempways++;
+                        }
+                        if(tempdesk[i - 1][j - 1] != true)
+                        {
+                            tempways++;
+                        }
+                        if(tempdesk[i - 1][j + 1] != true)
+                        {
+                            tempways++;
+                        }
+                    }
+                    if(tempways >= 2)
+                    {
+                        moveret.x = i - 1;
+                        moveret.y = j;
+                        return
+                                moveret;
+                    }
+                    tempways = 0;
+                }
+                if(j - 1 >= 0 && groups[i][j - 1] == 0)
+                {
+                    if(tempdesk[i][j - 1] = true)
+                    {
+                        if(i - 1 >= 0 &&tempdesk[i - 1][j - 1] != true)
+                        {
+                            tempways++;
+                        }
+                        if(j - 2 >= 0 && tempdesk[i][j - 2] != true)
+                        {
+                            tempways++;
+                        }
+                        if(i + 1 < n && tempdesk[i + 1][j - 1] != true)
+                        {
+                            tempways++;
+                        }
+                    }
+                    if(tempways >= 2)
+                    {
+                        moveret.x = i;
+                        moveret.y = j - 1;
+                        return
+                                moveret;
+                    }
+                }
+                if( i + 1 < n && groups[i + 1][j] == 0)
+                {
+                    if(tempdesk[i + 1][j] = true)
+                    {
+                        if(j - 1 >= 0 && tempdesk[i + 1][j - 1] != true)
+                        {
+                            tempways++;
+                        }
+                        if(j + 2 < n &&tempdesk[i + 2][j] != true)
+                        {
+                            tempways++;
+                        }
+                        if(j + 1 < n && tempdesk[i + 1][j + 1] != true)
+                        {
+                            tempways++;
+                        }
+                    }
+                    if(tempways >= 2)
+                    {
+                        moveret.x = i + 1;
+                        moveret.y = j;
+                        return
+                                moveret;
+                    }
+                    tempways = 0;
+                }
+                if( j + 1 < n && groups[i][j + 1] == 0)
+                {
+                    if(tempdesk[i][j + 1] = true)
+                    {
+                        if(i + 1 < n && tempdesk[i + 1][j + 1] != true)
+                        {
+                            tempways++;
+                        }
+                        if(j + 2 < n && tempdesk[i][j + 2] != true)
+                        {
+                            tempways++;
+                        }
+                        if(i - 1 >= 0 && tempdesk[i - 1][j + 1] != true)
+                        {
+                            tempways++;
+                        }
+                    }
+                    if(tempways >= 2)
+                    {
+                        moveret.x = i;
+                        moveret.y = j + 1;
+                        return
+                                moveret;
+                    }
+                    tempways = 0;
+                }
+            }
+        }
+    }
+    return
+            moveret;
+
+}
+
 void search_one_group(stack<move> &points, int **allgroups, move &startpoint,
                       move &temppoint, int &stonecolor, int &group_number, int &n, int **desk)
 {
@@ -182,6 +338,7 @@ int main()
             viewed[i][j] = false;
     }
     groups_search(desk, n, mat);
+    cout << endl;
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
@@ -190,6 +347,9 @@ int main()
         }
         cout << endl;
     }
-    int ways = free_ways(1, mat, n);
-    cout << "free ways of first group " << ways << endl;
+    int ways = free_ways_count(mat, 1, n);
+    cout << "Ways of first group - " << ways << endl;
+    move incr = increase_group_power(mat, 1, n);
+    cout << incr.x << " " << incr.y << endl;
+
 }
