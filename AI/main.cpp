@@ -76,8 +76,8 @@ move increase_group_power(int **groups, int group_number, int n)
 {
 
     move moveret;
-    moveret.x = 0;
-    moveret.y = 0;
+    moveret.x = -1;
+    moveret.y = -1;
     int tempways = 0;
     bool **tempdesk = new bool*[n];
     for(int i = 0; i < n; i++)
@@ -120,9 +120,9 @@ move increase_group_power(int **groups, int group_number, int n)
                 }
                 if(j - 1 >= 0 && groups[i][j - 1] == 0)
                 {
-                    if(tempdesk[i][j - 1] = true)
+                    if(tempdesk[i][j - 1] == true)
                     {
-                        if(i - 1 >= 0 &&tempdesk[i - 1][j - 1] != true)
+                        if(i - 1 >= 0 && tempdesk[i - 1][j - 1] != true)
                         {
                             tempways++;
                         }
@@ -145,7 +145,7 @@ move increase_group_power(int **groups, int group_number, int n)
                 }
                 if( i + 1 < n && groups[i + 1][j] == 0)
                 {
-                    if(tempdesk[i + 1][j] = true)
+                    if(tempdesk[i + 1][j] == true)
                     {
                         if(j - 1 >= 0 && tempdesk[i + 1][j - 1] != true)
                         {
@@ -171,7 +171,7 @@ move increase_group_power(int **groups, int group_number, int n)
                 }
                 if( j + 1 < n && groups[i][j + 1] == 0)
                 {
-                    if(tempdesk[i][j + 1] = true)
+                    if(tempdesk[i][j + 1] == true)
                     {
                         if(i + 1 < n && tempdesk[i + 1][j + 1] != true)
                         {
@@ -195,6 +195,23 @@ move increase_group_power(int **groups, int group_number, int n)
                     }
                     tempways = 0;
                 }
+            }
+        }
+    }
+    tempways = free_ways_count(groups, group_number, n);
+    if(tempways == 1)
+    {
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                if(tempdesk[i][j] == true)
+                   {
+                    moveret.x = i;
+                    moveret.y = j;
+                    return
+                            moveret;
+                   }
             }
         }
     }
@@ -302,6 +319,9 @@ void groups_search(int **desk, int n, int **allgroups)
 int main()
 {
     int n;
+    move tempmove;
+    tempmove.x = -1;
+    tempmove.y = -1;
     cin >> n;
     int **desk = new int*[n];
     for(int i = 0; i < n; i++)
@@ -327,16 +347,7 @@ int main()
             mat[i][j] = 0;
         }
     }
-    bool **viewed = new bool*[n];
-    for(int i = 0; i < n; i++)
-    {
-        viewed[i] = new bool[n];
-    }
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < n; j++)
-            viewed[i][j] = false;
-    }
+
     groups_search(desk, n, mat);
     cout << endl;
     for(int i = 0; i < n; i++)
@@ -347,9 +358,44 @@ int main()
         }
         cout << endl;
     }
-    int ways = free_ways_count(mat, 1, n);
-    cout << "Ways of first group - " << ways << endl;
-    move incr = increase_group_power(mat, 1, n);
-    cout << incr.x << " " << incr.y << endl;
+    int stonetype = 0;
+    int tempvar = 0;
+    int tempgroup = 0;
+    cout << "Bot stone color - ";
+    cin >> stonetype;
+    /* Приоритеты -
+     * 1.Защитить свои группы
+     * 2. Захватить группу вражески камней
+     */
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n ;j++)
+        {
+            if(mat[i][j] > tempvar)
+            {
+                tempvar = mat[i][j];
+            }
+        }
+    }
+    /* Проверяем сколько путей дыхания у каждой группы бота */
+    for(int i = stonetype; i <= tempvar; i+= 2)
+    {
+        tempgroup = free_ways_count(mat, i, n);
+        if(tempgroup == 1)
+        {
+            tempmove = increase_group_power(mat, i, n);
+            cout << "Defend move - " << tempmove.x << " " << tempmove.y << endl;
+        }
+    }
+    /* Проверяем группы вражеских камней, которые можно захватить за один ход */
+    for(int i = stonetype + 1; i <= tempvar; i+= 2)
+    {
+        tempgroup = free_ways_count(mat, i, n);
+        if(tempgroup == 1)
+        {
+            tempmove = increase_group_power(mat, i , n);
+            cout << "Attack move - " << tempmove.x << " " << tempmove.y << endl;
+        }
+    }
 
 }
